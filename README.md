@@ -5,6 +5,8 @@ I am planning to learn along and explain all the stuff used for the model.
 
 13/09/2026:
 Math topics used:
+
+
 **1. Basic Algebra (the foundation)**
 Before any AI, I needed simple maths. Images are stored as numbers 0-255. `ToTensor:81` divides by 255 to make them 0-1. `Normalize:82` does `(pixel - 0.485)/0.229` for each color - like converting marks to a standard scale so the pretrained network understands them. `weights 1/436` for rare `disgust` vs `1/7215` for `happy` is also just algebra.
 
@@ -27,4 +29,4 @@ This is the heart - `CrossEntropyLoss:131`. Think of it as a guessing penalty: i
 Learning is finding the lowest valley in a huge hilly landscape (all weights). `AdamW lr3e-4 weight_decay:134` is the walker - it takes steps `3e-4` big at first, `CosineAnnealing:136` shrinks steps `3e-4->0` over 25 epochs so it settles precisely. `weight_decay` penalizes huge weights (which mean memorizing quirks). `AMP GradScaler:138` just makes 224px training 2x faster. I save only `best checkpoint:168` (highest `val_acc`) not the last epoch, because last is often overfit.
 
 
-> In short: Linear Algebra turns faces into numbers, Probability/Statistics handle rare `disgust`, Information Theory scores the guess, Calculus+Optimization nudges 21M numbers via `backward` until `Voting Ensemble w_a*p_a+w_b*p_b:190` averages `ResNet34` (deep shape) and `EffNet-B0` (texture attention) to cancel mistakes -> 0.71301.
+> In short: Linear Algebra turns faces into numbers, Probability/Statistics handle rare `disgust`, Information Theory scores the guess, Calculus+Optimization nudges 21M numbers via `backward` until `Voting Ensemble w_a*p_a+w_b*p_b:190` averages `ResNet34` (deep shape) and `EffNet-B0` (texture attention) to cancel mistakes -> final model.

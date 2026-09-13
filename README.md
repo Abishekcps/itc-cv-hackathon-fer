@@ -21,7 +21,7 @@ The dataset is unfair: `disgust` is only 436 out of 28,709 (1.52%, 1 in 65) whil
 I used mean and variance to normalize images, and counting to fix imbalance: `class_weights = 1/count:99` gives `disgust` 16x more penalty when wrong, so the model cares. `train_test_split stratify:53` keeps `1.52% disgust` same in `Train 24402` and `Val 4307` - like keeping the same ratio in an exam sample. `val_acc = correct/total:140` and `gap = train_acc - val_acc` tells me if I memorize (gap 0.11 = mild memorization).
 
 **5. Information Theory: Entropy, Cross-Entropy, KL Divergence (the loss)**
-This is the heart - `CrossEntropyLoss:131`. Think of it as a guessing penalty: if true is `fear`, and I predict `fear 0.9` my penalty is small `-log(0.9)=0.10`; if I predict `fear 0.1` penalty is large `-log(0.1)=2.3`. Entropy is how unsure the true label is (0 for sure). KL Divergence is how far my guess is from truth. `CrossEntropy = Entropy + KL`, so minimizing CrossEntropy *is* minimizing KL gap. `label_smoothing 0.1` softens target `1.0 -> 0.9` so I don't become over-confident on noisy FER labels.
+ `CrossEntropyLoss:131`. Think of it as a guessing penalty: if true is `fear`, and I predict `fear 0.9` my penalty is small `-log(0.9)=0.10`; if I predict `fear 0.1` penalty is large `-log(0.1)=2.3`. Entropy is how unsure the true label is (0 for sure). KL Divergence is how far my guess is from truth. `CrossEntropy = Entropy + KL`, so minimizing CrossEntropy *is* minimizing KL gap. `label_smoothing 0.1` softens target `1.0 -> 0.9` so the model don't become over-confident on labels.
 
 **6. Calculus (how the network learns)**
 `loss.backward():161` uses the chain rule from calculus - it calculates the slope `∂loss/∂weight` for every one of 21M weights (how much loss would drop if that weight nudged). Then `optimizer.step():163` nudges each weight down that slope. ResNet's skip `y=F(x)+x` is a calculus trick: it lets the slope flow through 34 layers without vanishing to zero, so deep networks can actually learn.
@@ -31,3 +31,6 @@ Learning is finding the lowest valley in a huge hilly landscape (all weights). `
 
 
 > In short: Linear Algebra turns faces into numbers, Probability/Statistics handle rare `disgust`, Information Theory scores the guess, Calculus+Optimization nudges 21M numbers via `backward` until `Voting Ensemble w_a*p_a+w_b*p_b:190` averages `ResNet34` (deep shape) and `EffNet-B0` (texture attention) to cancel mistakes -> final model.
+
+
+next target: exploring more on the actual code / exploring options to increase accuracy of model using methods like ViT/CLIP and idea of diffusion models in the model creates new images based on the training data, just slightly modifying them, which becomes more training data, and as more data = more accuracy, so the model's accuracy increases via these.

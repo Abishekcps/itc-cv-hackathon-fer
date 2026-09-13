@@ -4,6 +4,7 @@ the hackathon - building a model to predict facial expressions--learnt a lot abo
 I am planning to learn along and explain all the stuff used for the model.
 
 13/09/2026:
+
 Math topics used:
 
 
